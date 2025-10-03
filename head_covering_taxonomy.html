@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Head & Shoulder Covering Taxonomy</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        html {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-attachment: fixed;
+            min-height: 100%;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        h2 {
+            color: #2d3748;
+            margin-top: 30px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #4a5568;
+            margin-top: 20px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .controls {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            align-items: flex-start;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .filter-group label {
+            font-weight: 600;
+            font-size: 0.9em;
+            color: #4a5568;
+        }
+        .checkbox-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 8px;
+            max-width: 800px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .checkbox-item input[type="checkbox"] {
+            cursor: pointer;
+        }
+        .checkbox-item label {
+            cursor: pointer;
+            font-weight: normal;
+            font-size: 0.85em;
+            color: #2d3748;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .legend-box {
+            width: 30px;
+            height: 20px;
+            border: 1px solid #cbd5e0;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .matrix-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 0.85em;
+        }
+        th {
+            background: #4a5568;
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            width: 7.3%;
+            cursor: pointer;
+            user-select: none;
+        }
+        th:hover {
+            background: #2d3748;
+        }
+        th.garment-name {
+            text-align: left;
+            width: 20%;
+            background: #2d3748;
+        }
+        th.garment-name:hover {
+            background: #1a202c;
+        }
+        .sort-arrow {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 0.8em;
+            opacity: 0.5;
+        }
+        th.sorted .sort-arrow {
+            opacity: 1;
+        }
+        td {
+            padding: 10px 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+        td.garment-name {
+            font-weight: 600;
+            text-align: left;
+            background: #f7fafc;
+            color: #2d3748;
+        }
+        .coverage-full {
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+        }
+        .coverage-partial {
+            background: #f59e0b;
+            color: white;
+            font-weight: bold;
+        }
+        .coverage-none {
+            background: white;
+            border: 2px solid #cbd5e0;
+        }
+        .cultural-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            margin-left: 6px;
+            background: #e6fffa;
+            color: #234e52;
+        }
+        .cultural-tag.theoretical {
+            background: #fef3c7;
+            color: #92400e;
+            font-style: italic;
+        }
+        tr:hover {
+            background: #f7fafc;
+        }
+        .gaps-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff5f5;
+            border-left: 4px solid #f56565;
+            border-radius: 4px;
+        }
+        .gaps-section h3 {
+            color: #c53030;
+            margin-top: 0;
+        }
+        .theory-note {
+            background: #ebf8ff;
+            padding: 15px;
+            border-left: 4px solid #3182ce;
+            margin-top: 20px;
+            border-radius: 4px;
+        }
+        .info-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-left: 4px solid #4a5568;
+            margin-top: 30px;
+            border-radius: 4px;
+        }
+        .info-section h2 {
+            margin-top: 0;
+            border: none;
+            padding: 0;
+        }
+        .info-section ul {
+            margin: 10px 0;
+        }
+        .info-section li {
+            margin: 8px 0;
+        }
+        .citation-box {
+            background: #edf2f7;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+        a {
+            color: #3182ce;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Taxonomy of Head & Shoulder Coverings</h1>
+        <p class="subtitle">A systematic analysis of coverage patterns across cultural and functional contexts</p>
+        
+        <div class="controls">
+            <div class="filter-group">
+                <label>Filter by Category:</label>
+                <div class="checkbox-container" id="originCheckboxes">
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box coverage-full">●</div>
+                <span>Full Coverage (●)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box coverage-partial">◐</div>
+                <span>Partial/Variable (◐)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box coverage-none">○</div>
+                <span>No Coverage (○)</span>
+            </div>
+        </div>
+
+        <div class="matrix-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="garment-name">Garment</th>
+                        <th>Crown</th>
+                        <th>Sides/Temp</th>
+                        <th>Ears</th>
+                        <th>Back Head</th>
+                        <th>Face Front</th>
+                        <th>Jaw/Chin</th>
+                        <th>Eyes</th>
+                        <th>Neck Front</th>
+                        <th>Neck Back</th>
+                        <th>Shoulders</th>
+                        <th>Upper Torso</th>
+                    </tr>
+                </thead>
+                <tbody id="garment-data">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="gaps-section">
+            <h3>Design Space Exploration</h3>
+            <p>Theoretical gaps marked with <span class="cultural-tag theoretical">Theoretical Gap</span> represent coverage patterns that are geometrically possible but lack common named examples in existing cultural traditions. These gaps suggest:</p>
+            <ul>
+                <li><strong>Unexplored design space</strong> - Combinations that may be functionally viable but haven't emerged due to cultural/historical contingencies</li>
+                <li><strong>Opportunities for innovation</strong> - Particularly relevant for costume design, sci-fi/fantasy worldbuilding, or specialized protective equipment</li>
+                <li><strong>Functional constraints</strong> - Some gaps may exist because the combination lacks practical utility or is structurally unstable</li>
+            </ul>
+            <p><strong>Note:</strong> If you know of real-world examples that fill these gaps, this taxonomy should be updated! The "Ears + Neck guard" pattern may exist in some sci-fi costumes or specialized helmets.</p>
+        </div>
+
+        <div class="theory-note">
+            <h3>Taxonomic Observations</h3>
+            
+            <p><strong>Convergent Evolution in Design Space:</strong></p>
+            <p>Several garments from completely different cultural contexts occupy the same geometric position:</p>
+            <ul>
+                <li><strong>Hijab/Al-amira (Islamic) = Coif (Medieval Catholic)</strong> - Full head+neck coverage with exposed face, independently developed for modesty and practicality</li>
+                <li><strong>Trap Jaw (He-Man) = Darth Malak (Star Wars)</strong> - Prosthetic jaw apparatus with ear coverage, convergent design for cybernetic characters</li>
+                <li><strong>Scarf (Fashion) = Gorget (Armor)</strong> - Neck front/back coverage, one for warmth, one for protection</li>
+            </ul>
+            
+            <p><strong>Primary Axes of Variation:</strong></p>
+            <ul>
+                <li><strong>Modesty/Religious</strong> - Progressive coverage from hijab → niqab → burqa</li>
+                <li><strong>Thermal/Weather</strong> - Functional coverage prioritizing warmth (balaclava, scarf, ushanka)</li>
+                <li><strong>Identity/Disguise</strong> - Face coverage for anonymity (mask, domino, bandana)</li>
+                <li><strong>Ceremonial/Status</strong> - Decorative draping (mantle, cape, veil)</li>
+                <li><strong>Occupational/Armor</strong> - Protective coverage (aventail, gorget)</li>
+                <li><strong>Fictional/Character Design</strong> - Aesthetically-driven combinations (Batman cowl, Trap Jaw)</li>
+            </ul>
+            
+            <p><strong>Coverage Efficiency:</strong> Out of 36 garments, 33 occupy unique positions in the 11-dimensional coverage space (91.7% uniqueness), suggesting the taxonomy captures meaningful distinctions.</p>
+        </div>
+
+        <div class="info-section">
+            <h2>About This Project</h2>
+            <p>This taxonomy emerged from a casual conversation exploring the implicit structure underlying head and shoulder coverings across diverse contexts—religious traditions, historical armor, functional clothing, and fictional character design. The goal was to create an areligious, cross-cultural framework that maps garments by their geometric coverage patterns rather than their cultural meanings.</p>
+            
+            <p>What began as curiosity about whether "cape, cowl, shawl, scarf, hood, and mask" represented a complete set evolved into this systematic exploration of the design space. By adding columns for specific anatomical regions (ears, jaw) and examining convergent patterns across cultures, the taxonomy reveals that while the geometric possibilities are finite, different traditions have explored remarkably diverse regions of this space.</p>
+            
+            <p><strong>Scope:</strong> This taxonomy focuses on head, neck, and shoulder coverings. While it could theoretically extend to full-body garments, we've deliberately limited the scope to maintain usefulness without descending into exhaustive minutiae.</p>
+        </div>
+
+        <div class="info-section">
+            <h2>How to Cite This Work</h2>
+            <p>If you reference this taxonomy in academic work, costume design documentation, worldbuilding projects, or other contexts, please use the following citation format:</p>
+            
+            <div class="citation-box">
+<strong>Web citation:</strong><br>
+Anonymous. (2025). <em>Taxonomy of Head & Shoulder Coverings: A Systematic Analysis of Coverage Patterns Across Cultural and Functional Contexts</em>. [Online] Available at: [URL] (Accessed: [Date])
+            </div>
+            
+            <div class="citation-box">
+<strong>APA format:</strong><br>
+Anonymous. (2025). Taxonomy of head & shoulder coverings: A systematic analysis of coverage patterns across cultural and functional contexts. https://[your-url-here]
+            </div>
+            
+            <p>This work is offered for public use with attribution. The taxonomy is incomplete and invites expansion by domain experts.</p>
+        </div>
+
+        <div class="info-section">
+            <h2>Contributing</h2>
+            <p>This taxonomy is deliberately incomplete and benefits from community contributions. If you identify:</p>
+            <ul>
+                <li><strong>Missing garments</strong> that occupy unique positions in the coverage space</li>
+                <li><strong>Errors in coverage patterns</strong> for existing entries</li>
+                <li><strong>Real-world examples</strong> that fill theoretical gaps</li>
+                <li><strong>Additional anatomical distinctions</strong> that reveal meaningful patterns</li>
+            </ul>
+            <p>Please contribute by [submitting an issue/pull request on GitHub | contacting via email | your preferred method]. Include:</p>
+            <ul>
+                <li>Garment name and origin/context</li>
+                <li>Coverage pattern across all 11 regions</li>
+                <li>Visual references or descriptions</li>
+                <li>Justification for inclusion (i.e., why it occupies a unique or important position)</li>
+            </ul>
+        </div>
+
+        <div class="info-section">
+            <h2>Related Work & Attribution</h2>
+            <p>While this specific structural taxonomy appears to be novel, related scholarship exists in several domains:</p>
+            
+            <h3>Direct Sources</h3>
+            <ul>
+                <li><strong>Muller-Lancet, Aviva</strong> (1981). <em>Taxonomy of ethnographic costume</em>. Paper presented at ICOM International Committee for Costume, Nauplion. [Note: This work is referenced in ICOM archives but the full text remains difficult to access. Muller-Lancet was a specialist in Jewish ethnography at the Israel Museum.]</li>
+                <li><strong>Wikipedia contributors</strong>. <em>List of headgear</em> and <em>Headgear</em>. Wikipedia, The Free Encyclopedia. [Provided comprehensive lists of garment types that informed initial taxonomy structure]</li>
+            </ul>
+            
+            <h3>Methodological Context</h3>
+            <ul>
+                <li><strong>Dress History scholarship</strong> - Object-based research in costume history (Lou Taylor, <em>The Study of Dress History</em>, 2002) provided methodological context for material culture analysis</li>
+                <li><strong>Material Culture studies</strong> - Anthropological approaches to artifact classification informed the cross-cultural analytical framework</li>
+                <li><strong>Comparative Morphology</strong> - Biological taxonomy principles (form-based classification independent of function) inspired the geometric approach</li>
+            </ul>
+            
+            <h3>Cultural Domain Knowledge</h3>
+            <p>Information about specific garments drew from various cultural and historical sources:</p>
+            <ul>
+                <li>Islamic dress scholarship on hijab variants and traditional coverings</li>
+                <li>Catholic vestment documentation and medieval costume history</li>
+                <li>Armor and military equipment references (gorget, aventail, coif)</li>
+                <li>Pop culture and character design (superhero costumes, sci-fi/fantasy franchises)</li>
+            </ul>
+            
+            <p><strong>AI Assistance:</strong> This taxonomy was developed through collaborative conversation with Claude (Anthropic), which provided research assistance, taxonomic structuring, and implementation of the interactive visualization.</p>
+        </div>
+    </div>
+
+    <script>
+        const garments = [
+            // Name, Crown, Sides, Ears, BackHead, Face, Jaw, Eyes, NeckFront, NeckBack, Shoulders, Torso, DisplayTags, FilterCategory
+            ["Hijab / Al-amira / Coif", "full", "full", "full", "full", "none", "none", "none", "full", "full", "none", "none", "Islamic, Catholic", "Religious"],
+            ["Niqab", "full", "full", "full", "full", "partial", "partial", "none", "full", "full", "none", "none", "Islamic", "Religious"],
+            ["Burqa", "full", "full", "full", "full", "full", "full", "full", "full", "full", "partial", "partial", "Islamic", "Religious"],
+            ["Khimar", "full", "full", "full", "full", "none", "none", "none", "full", "full", "full", "partial", "Islamic", "Religious"],
+            ["Chador", "full", "full", "full", "full", "none", "none", "none", "partial", "partial", "full", "full", "Islamic", "Religious"],
+            ["Shayla", "full", "partial", "partial", "full", "none", "none", "none", "partial", "partial", "none", "none", "Islamic", "Religious"],
+            ["Wimple", "none", "full", "partial", "none", "partial", "partial", "none", "full", "none", "none", "none", "Catholic", "Religious"],
+            ["Veil", "full", "partial", "partial", "partial", "partial", "none", "none", "none", "none", "none", "none", "Catholic", "Religious"],
+            ["Mantilla", "full", "partial", "partial", "full", "none", "none", "none", "none", "full", "full", "none", "Catholic", "Religious"],
+            ["Capuce", "full", "full", "full", "full", "none", "none", "none", "full", "full", "full", "none", "Monastic", "Religious"],
+            ["Hood", "full", "full", "full", "full", "none", "none", "none", "partial", "full", "none", "none", "Functional", "Functional"],
+            ["Balaclava", "full", "full", "full", "full", "partial", "none", "none", "full", "full", "none", "none", "Functional", "Functional"],
+            ["Ushanka", "full", "full", "full", "full", "none", "none", "none", "none", "none", "none", "none", "Functional", "Functional"],
+            ["Earmuffs", "none", "none", "full", "none", "none", "none", "none", "none", "none", "none", "none", "Functional", "Functional"],
+            ["Cowl", "full", "full", "full", "full", "none", "none", "none", "full", "full", "partial", "none", "Fantasy", "Fantasy"],
+            ["Cape", "none", "none", "none", "none", "none", "none", "none", "partial", "partial", "full", "none", "Superhero", "Fantasy"],
+            ["Cloak", "none", "none", "none", "none", "none", "none", "none", "partial", "partial", "full", "full", "Fantasy", "Fantasy"],
+            ["Mantle", "none", "none", "none", "none", "none", "none", "none", "partial", "partial", "full", "partial", "Ceremonial", "Traditional/Ceremonial"],
+            ["Mask (full)", "none", "none", "none", "none", "full", "full", "none", "none", "none", "none", "none", "Superhero", "Fantasy"],
+            ["Domino mask", "none", "none", "none", "none", "none", "none", "full", "none", "none", "none", "none", "Superhero", "Fantasy"],
+            ["Batman cowl", "full", "full", "full", "full", "partial", "none", "full", "partial", "full", "none", "none", "Superhero", "Fantasy"],
+            ["Trap Jaw / Darth Malak", "none", "partial", "full", "none", "none", "full", "none", "none", "none", "none", "none", "He-Man, Star Wars", "Fantasy"],
+            ["Grills / Jaws", "none", "none", "none", "none", "none", "full", "none", "none", "none", "none", "none", "Hip-hop, Bond", "Fashion, Fantasy"],
+            ["Bandana (face)", "none", "none", "none", "none", "partial", "partial", "none", "none", "none", "none", "none", "Western", "Functional"],
+            ["Bandana (head)", "full", "none", "none", "partial", "none", "none", "none", "none", "none", "none", "none", "Practical", "Functional"],
+            ["Scarf / Gorget", "none", "none", "none", "none", "none", "none", "none", "full", "partial", "none", "none", "Fashion, Armor", "Fashion, Functional"],
+            ["Shawl", "partial", "partial", "partial", "partial", "none", "none", "none", "none", "partial", "full", "none", "Traditional", "Traditional/Ceremonial"],
+            ["Turban", "full", "full", "partial", "full", "none", "none", "none", "none", "partial", "none", "none", "Sikh/Cultural", "Religious"],
+            ["Keffiyeh", "full", "full", "full", "full", "partial", "partial", "none", "partial", "partial", "partial", "none", "Middle Eastern", "Religious"],
+            ["Tichel", "full", "partial", "partial", "partial", "none", "none", "none", "none", "none", "none", "none", "Jewish", "Religious"],
+            ["Tallit", "partial", "none", "none", "none", "none", "none", "none", "none", "none", "full", "partial", "Jewish", "Traditional/Ceremonial"],
+            ["Aventail", "none", "full", "full", "full", "none", "none", "none", "full", "full", "partial", "none", "Armor", "Functional"],
+            ["Collar", "none", "none", "none", "none", "none", "none", "none", "full", "full", "none", "none", "Fashion", "Fashion"],
+            ["Crown + Eyes only", "full", "none", "none", "none", "none", "none", "full", "none", "none", "none", "none", "Theoretical Gap", "Theoretical Gap"],
+            ["Ears + Neck guard", "none", "none", "full", "none", "none", "none", "none", "full", "partial", "none", "none", "Theoretical Gap", "Theoretical Gap"],
+            ["Shoulders + Face only", "none", "none", "none", "none", "full", "full", "none", "none", "none", "full", "none", "Theoretical Gap", "Theoretical Gap"],
+            ["Back-of-head only", "none", "none", "none", "full", "none", "none", "none", "none", "none", "none", "none", "Theoretical Gap", "Theoretical Gap"],
+        ];
+
+        const originalOrder = [...garments];
+        let currentSort = { column: -1, ascending: true };
+        let selectedCategories = new Set();
+
+        const filterCategories = new Set();
+        garments.forEach(g => {
+            const categories = g[13].split(',').map(t => t.trim());
+            categories.forEach(cat => filterCategories.add(cat));
+        });
+
+        filterCategories.forEach(cat => selectedCategories.add(cat));
+
+        const checkboxContainer = document.getElementById('originCheckboxes');
+        Array.from(filterCategories).sort().forEach(category => {
+            const item = document.createElement('div');
+            item.className = 'checkbox-item';
+            
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = `filter-${category}`;
+            checkbox.value = category;
+            checkbox.checked = true;
+            
+            const label = document.createElement('label');
+            label.htmlFor = `filter-${category}`;
+            label.textContent = category;
+            
+            checkbox.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    selectedCategories.add(category);
+                } else {
+                    selectedCategories.delete(category);
+                }
+                renderTable();
+            });
+            
+            item.appendChild(checkbox);
+            item.appendChild(label);
+            checkboxContainer.appendChild(item);
+        });
+
+        function getSymbol(value) {
+            return value === 'full' ? '●' : value === 'partial' ? '◐' : '○';
+        }
+
+        function getSortValue(value) {
+            return value === 'full' ? 2 : value === 'partial' ? 1 : 0;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('garment-data');
+            tbody.innerHTML = '';
+
+            let filtered = garments.filter(g => {
+                if (selectedCategories.size === 0) return false;
+                const categories = g[13].split(',').map(t => t.trim());
+                return categories.some(cat => selectedCategories.has(cat));
+            });
+
+            let sorted = [...filtered];
+            if (currentSort.column !== -1) {
+                sorted.sort((a, b) => {
+                    let aVal = currentSort.column === 0 ? a[0] : getSortValue(a[currentSort.column]);
+                    let bVal = currentSort.column === 0 ? b[0] : getSortValue(b[currentSort.column]);
+                    
+                    if (currentSort.column === 0) {
+                        return currentSort.ascending ? 
+                            aVal.localeCompare(bVal) : 
+                            bVal.localeCompare(aVal);
+                    }
+                    
+                    return currentSort.ascending ? aVal - bVal : bVal - aVal;
+                });
+            } else {
+                sorted = originalOrder.filter(g => filtered.includes(g));
+            }
+
+            sorted.forEach(garment => {
+                const row = document.createElement('tr');
+                const [name, crown, sides, ears, back, face, jaw, eyes, neckF, neckB, shoulders, torso, displayTag, filterCat] = garment;
+                
+                row.innerHTML = `
+                    <td class="garment-name">${name}<span class="cultural-tag${displayTag === 'Theoretical Gap' ? ' theoretical' : ''}">${displayTag}</span></td>
+                    <td class="coverage-${crown}">${getSymbol(crown)}</td>
+                    <td class="coverage-${sides}">${getSymbol(sides)}</td>
+                    <td class="coverage-${ears}">${getSymbol(ears)}</td>
+                    <td class="coverage-${back}">${getSymbol(back)}</td>
+                    <td class="coverage-${face}">${getSymbol(face)}</td>
+                    <td class="coverage-${jaw}">${getSymbol(jaw)}</td>
+                    <td class="coverage-${eyes}">${getSymbol(eyes)}</td>
+                    <td class="coverage-${neckF}">${getSymbol(neckF)}</td>
+                    <td class="coverage-${neckB}">${getSymbol(neckB)}</td>
+                    <td class="coverage-${shoulders}">${getSymbol(shoulders)}</td>
+                    <td class="coverage-${torso}">${getSymbol(torso)}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function setupSorting() {
+            const headers = document.querySelectorAll('th');
+            headers.forEach((header, index) => {
+                header.innerHTML += ' <span class="sort-arrow">↕</span>';
+                header.addEventListener('click', () => {
+                    if (currentSort.column === index) {
+                        if (currentSort.ascending) {
+                            currentSort.ascending = false;
+                        } else {
+                            currentSort.column = -1;
+                            currentSort.ascending = true;
+                        }
+                    } else {
+                        currentSort.column = index;
+                        currentSort.ascending = true;
+                    }
+                    
+                    headers.forEach((h, i) => {
+                        h.classList.remove('sorted');
+                        const arrow = h.querySelector('.sort-arrow');
+                        if (currentSort.column === i) {
+                            h.classList.add('sorted');
+                            arrow.textContent = currentSort.ascending ? '↑' : '↓';
+                        } else {
+                            arrow.textContent = '↕';
+                        }
+                    });
+                    
+                    renderTable();
+                });
+            });
+        }
+
+        renderTable();
+        setupSorting();
+    </script>
+</body>
+</html>
